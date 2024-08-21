@@ -1,0 +1,29 @@
+{
+  "version": "1.0",
+  "defaultProvider": "unpkg",
+  "libraries": [
+    {
+      "library": "@microsoft/signalr@latest",
+      "destination": "wwwroot/js/signalr/",
+      "files": [
+        "dist/browser/signalr.js",
+        "dist/browser/signalr.min.js"
+      ]
+    },
+    {
+      "library": "chart.js@4.4.3",
+      "destination": "wwwroot/js/chart",
+      "files": [
+        "dist/chart.js"
+      ]
+    },
+    {
+      "library": "axios@1.7.2",
+      "destination": "wwwroot/js/axios",
+      "files": [
+        "dist/axios.js",
+        "dist/axios.min.js"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+<div id="chatContainer" class="container mt-5">
+    <div id="chatBox" class="border rounded p-3 mb-3" style="height: 500px; overflow-y: auto; background-color: #f8f9fa;">
+        <!-- Messages will appear here -->
+    </div>
+    <div class="input-group">
+        <input type="text" id="userInput" class="form-control" placeholder="Your message..." />
+        <button id="sendButton" class="btn btn-primary">Send</button>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script>
+        // Create a connection to the hub
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("/chathub")
+            .build();
+
+        // Start the connection
+        connection.start().then(() => {
+            console.log("Connected to the ChatHub");
+
+            // Handle the send button click
+            document.getElementById("sendButton").addEventListener("click", function() {
+                const userInput = document.getElementById("userInput").value;
+
+                // Send a message to the hub
+                connection.invoke("SendMessage", userInput).catch(err => console.error(err));
+            });
+
+            // Receive messages from the hub
+            connection.on("ReceiveMessage", (sender, message) => {
+                const chatBox = document.getElementById("chatBox");
+                const newMessage = document.createElement("div");
+                newMessage.innerHTML = `<strong>${sender}:</strong> ${message}`;
+                chatBox.appendChild(newMessage);
+
+                // Scroll to the bottom of the chatBox
+                chatBox.scrollTop = chatBox.scrollHeight;
+            });
+
+        }).catch(err => console.error(err));
+    </script>
+}

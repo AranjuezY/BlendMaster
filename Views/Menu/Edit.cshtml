@@ -1,0 +1,27 @@
+@model IEnumerable<WebApplication2.Entities.Product>
+
+@{
+    
+}
+
+<table class="table table-striped table-bordered table-hover">
+    <thead class="thead-dark">
+    <tr>
+        <th>Product Name</th>
+        <th>Price</th>
+        <th>Category</th>
+        <th>Recipe</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var product in Model)
+    {
+        <tr>
+            <td>@product.ProductName</td>
+            <td>@product.Price.ToString("C")</td>
+            <td>@product.Category.CategoryName</td>
+            <td><a class="btn btn-primary btn-sm" asp-controller="Admin" asp-action="RecipeDetail" asp-route-id="@product.RecipeId">View Recipe</a></td>
+        </tr>
+    }
+    </tbody>
+</table>

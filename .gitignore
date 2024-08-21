@@ -1,0 +1,14 @@
+# .gitignore
+
+# Compiled binaries
+bin/
+obj/
+
+appsettings.Development.json
+appsettings.Production.json
+
+.vs/
+.idea/
+
+**/.DS_Store
+**/Folder.DotSettings.user

@@ -1,0 +1,84 @@
+﻿@model WebApplication2.Entities.Recipe
+
+<div class="container mt-5">
+    <div class="card mb-4">
+        <div class="card-header">
+            <h2 class="card-title">@Model.Name</h2>
+        </div>
+        <div class="card-body">
+            <p class="card-text"><strong>Description:</strong> @Model.Description</p>
+
+            <h5>Ingredients</h5>
+            <ul class="list-group mb-3">
+                @foreach (var ingredient in Model.Ingredients)
+                {
+                    <li class="list-group-item">@ingredient</li>
+                }
+            </ul>
+
+            <h5>Instructions</h5>
+            <ul class="list-group mb-3">
+                @foreach (var instruction in Model.Instructions)
+                {
+                    <li class="list-group-item">@instruction</li>
+                }
+            </ul>
+
+            <h5>Tags</h5>
+            <ul class="list-inline">
+                @foreach (var tag in Model.Tags)
+                {
+                    <li class="list-inline-item">@tag</li>
+                }
+            </ul>
+
+            <form class="d-flex" asp-controller="Admin" asp-action="RecipeDetail" method="post" id="statusForm">
+                <input class="d-none" asp-for="RecipeId" value="@Model.RecipeId" />
+                <input class="d-none" asp-for="Tags" />
+                <h5>Change status to:</h5>
+                @foreach (var status in Enum.GetValues(typeof(RecipeStatusType)))
+                {
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" asp-for="Status" id="status_@status" value="@status" />
+                        <label class="form-check-label" for="status_@status">@status</label>
+                    </div>
+                }
+            </form>
+
+            <form asp-controller="Admin" asp-action="AddRecipeToMenu" method="post">
+                <input class="d-none" name="id" value="@Model.RecipeId" />
+                <label for="categoryName">category</label>
+                <select name="categoryName">
+                    @foreach (var category in ViewBag.Categories)
+                    {
+                        <option>@category</option>
+                    }
+                </select>
+                <label for="price">price</label>
+                <input type="text" name="price" />
+                <input type="submit" class="btn btn-danger" value="Add to Menu" />
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(function () {
+            $('input[type=radio][name=Status]').change(function () {
+                var form = $('#statusForm');
+                $.ajax({
+                    type: form.attr('method'),
+                    url: form.attr('action'),
+                    data: form.serialize(),
+                    success: function (response) {
+                        console.log('Form submitted successfully');
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Form submission failed: ' + error);
+                    }
+                });
+            });
+        });
+    </script>
+}

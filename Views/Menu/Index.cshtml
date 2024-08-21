@@ -1,0 +1,76 @@
+﻿@model MenuViewModel
+
+@{
+    ViewData["Title"] = "Menu";
+    var cartItems = ViewBag.CartItem as IEnumerable<Guid> ?? Enumerable.Empty<Guid>();
+}
+
+@await Html.PartialAsync("_BannerPartial", "Menu")
+
+<a asp-controller="Cart" asp-action="Index" class="link-info">Go to cart</a>
+<div class="row">
+    <!-- Category List (Left Side) -->
+    <div class="col-md-3">
+        <h3>Categories</h3>
+        <nav class="navbar navbar-expand-md navbar-light bg-light flex-column">
+            <button class="navbar-toggler mb-3" type="button" data-toggle="collapse" data-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav flex-column">
+                    @foreach (var category in Model.Categories)
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Menu" asp-action="Index" asp-route-categoryid="@category.CategoryId">
+                                @category.CategoryName
+                            </a>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </nav>
+    </div>
+    <!-- Product List (Right Side) -->
+    <div class="col-md-9">
+        <h3>Products</h3>
+        <div class="row row-cols-1 row-cols-md-2 g-4">
+            @foreach (var product in Model.Products)
+            {
+                var isInCart = cartItems.Contains(product.ProductId);
+                var bgClass = isInCart ? "bg-success" : "";
+                <div class="col">
+                    <div class="card h-100 d-flex flex-row">
+                        <img src="./images/TestImg.png" class="card-img-left" alt="@product.ProductName" style="height: 130px; width: 130px; object-fit: cover;">
+                        <div class="d-flex flex-column justify-content-between w-100">
+                            <div class="card-body">
+                                <h5 class="card-title">@product.ProductName</h5>
+                                <p class="card-text">@product.ProductDescription</p>
+                            </div>
+                        </div>
+                        <div class="card-footer d-flex flex-column align-items-stretch justify-content-evenly">
+                            <button class="btn btn-outline-secondary btn-sm @bgClass" onclick="add('@product.ProductId', this)">&#x2713</button>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function add(id, button) {
+            $.ajax({
+                url: '@Url.Action("AddToCart", "Menu")?productid=' + id,
+                type: 'POST',
+                success: function (data) {
+                    $('#categoriesPartialContainer').html(data);
+                    button.style.backgroundColor = 'green';
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                }
+            });
+        }
+    </script>
+}

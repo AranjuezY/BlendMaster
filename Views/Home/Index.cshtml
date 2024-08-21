@@ -1,0 +1,29 @@
+﻿@{
+    ViewData["title"] = "Home Page";
+}
+
+<div class="container" id="welcome-area">
+    <h1>BlendMaster</h1>
+    <p>Make an order or discover new and exciting drink recipes through our chatbot!</p>
+
+    <a href="@Url.Action("Table", "Home")" class="btn btn-primary">Choose Your Table</a>
+    <br />
+</div>
+
+@section Styles {
+    <style>
+        body {
+            background: url('/images/background_home.JPG') no-repeat center center fixed;
+            background-size: cover;
+        }
+
+        #welcome-area {
+            text-align: center;
+            padding: 50px;
+            background: rgba(255, 255, 255, 0.8); /* Semi-transparent white background */
+            border-radius: 10px;
+            max-width: 600px;
+            margin: 100px auto;
+        }
+    </style>
+}

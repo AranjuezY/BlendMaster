@@ -1,0 +1,49 @@
+﻿@model List<OngoingOrdersViewModel>
+
+@{
+    ViewData["Title"] = "Orders";
+}
+
+<div class="container mt-5">
+    <table class="table table-striped table-bordered">
+        <thead>
+            <tr>
+                <th>Order ID</th>
+                <th>Order Date</th>
+                <th>Order Items</th>
+                <th>Order Status</th>
+                <th>Table Id</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var order in Model)
+            {
+                <tr>
+                    <td>@order.OrderId</td>
+                    <td>@order.CreatedDate.ToString("yyyy-MM-dd")</td>
+                    <td>
+                        @foreach (var item in order.OrderItems)
+                        {
+                            <span class="badge badge-primary text-black">@item.Key * @item.Value</span>
+                        }
+                    </td>
+                    <td>@order.OrderStatus</td>
+                    <td>@order.TableId</td>
+                    <td>
+                        @if(order.OrderStatus == WebApplication2.Entities.OrderStatusType.Preparing)
+                        {
+                            <a asp-controller="Admin" asp-action="CompleteOrder" asp-route-id="@order.OrderId">complete</a>
+                            <span>|</span>
+                            <a asp-controller="Admin" asp-action="CancelOrder" asp-route-id="@order.OrderId">cancel</a>
+                        }
+                        else if(order.OrderStatus == WebApplication2.Entities.OrderStatusType.Completed)
+                        {
+                            <a asp-controller="Admin" asp-action="BillDetail" asp-route-id="@order.OrderId">bill</a>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

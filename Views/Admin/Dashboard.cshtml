@@ -1,0 +1,195 @@
+﻿@{
+    ViewData["Title"] = "Dashboard";
+    var ordersDataJson = ViewBag.OrdersData;
+}
+
+<div class="container mt-5">
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    Order Statistics
+                </div>
+                <div class="card-body">
+                    <div class="chart-container">
+                        <canvas id="ordersChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    Product Statistics
+                </div>
+                <div class="card-body">
+                    <div class="chart-container">
+                        <canvas id="productsChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .chart-container {
+        position: relative;
+        margin: auto;
+        height: 400px;
+    }
+</style>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        var ordersData = @Html.Raw(ordersDataJson);
+
+        // Convert dates and filter for the last 5 days
+        var now = new Date();
+        var tenDaysAgo = new Date();
+        tenDaysAgo.setDate(now.getDate() - 9); // Including today makes it 5 days
+
+        var filteredData = ordersData.filter(order => {
+            var orderDate = new Date(order.createdDate);
+            return orderDate >= tenDaysAgo && orderDate <= now;
+        });
+
+        function getRandomColor() {
+            var letters = '0123456789ABCDEF';
+            var color = '#';
+            for (var i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 16)];
+            }
+            return color;
+        }
+
+        // Group data by date and sum totals
+        var dailyTotals = {};
+        filteredData.forEach(order => {
+            var orderDate = new Date(order.createdDate).toLocaleDateString();
+            if (dailyTotals[orderDate]) {
+                dailyTotals[orderDate] += order.total;
+            } else {
+                dailyTotals[orderDate] = order.total;
+            }
+        });
+
+        // Prepare labels and data for the chart
+        var labels = Object.keys(dailyTotals).sort((a, b) => new Date(a) - new Date(b));
+        var data = labels.map(label => dailyTotals[label]);
+
+        // Order Statistics Chart
+        var ctxOrders = document.getElementById('ordersChart').getContext('2d');
+        new Chart(ctxOrders, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Total Sales',
+                    data: data,
+                    backgroundColor: labels.map(() => getRandomColor()),
+                    borderColor: labels.map(() => getRandomColor()),
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: false,
+                        position: 'top'
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function (context) {
+                                return `Total: $${context.raw.toFixed(2)}`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Date'
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Total Sales'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Group data by product and sum totals
+        var productTotals = {};
+        filteredData.forEach(order => {
+            order.orderDetails.forEach(detail => {
+                var productName = detail.product.productName;
+                if (productTotals[productName]) {
+                    productTotals[productName] += detail.quantity;
+                } else {
+                    productTotals[productName] = detail.quantity;
+                }
+            });
+        });
+
+        // Prepare labels (product names) and data (total sales) for the chart
+        var labels = Object.keys(productTotals);
+        var data = labels.map(label => productTotals[label]);
+
+
+        var ctxProducts = document.getElementById('productsChart').getContext('2d');
+        new Chart(ctxProducts, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Total Sales',
+                    data: data,
+                    backgroundColor: labels.map(() => getRandomColor()),
+                    borderColor: labels.map(() => getRandomColor()),
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: false,
+                        position: 'top'
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function (context) {
+                                return `Total: $${context.raw.toFixed(2)}`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Product'
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Total Sales'
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+}

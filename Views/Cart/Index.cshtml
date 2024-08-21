@@ -1,0 +1,68 @@
+﻿@model List<CartItem>
+
+@{
+    ViewData["Title"] = "Cart";
+}
+@if (Model != null && Model.Any())
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Product Name</th>
+                <th>Quantity</th>
+                <th>Price</th>
+                <th>Total</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.ProductName</td>
+                    <td>
+                        <div class="d-flex">
+                            @using (Html.BeginForm("SubtractQuantity", "Cart", FormMethod.Post))
+                            {
+                                @Html.HiddenFor(m => item.ProductId)
+                                @Html.HiddenFor(m => item.Quantity)
+                                <button type="submit" class="btn btn-primary d-flex justify-content-center align-items-center" style="width: 30px; height: 30px;">-</button>
+                            }
+                            <span style="padding: 0 10px; text-align: center">@item.Quantity</span>
+                            @using (Html.BeginForm("AddQuantity", "Cart", FormMethod.Post))
+                            {
+                                @Html.HiddenFor(m => item.ProductId)
+                                @Html.HiddenFor(m => item.Quantity)
+                                <button type="submit" class="btn btn-primary d-flex justify-content-center align-items-center" style="width: 30px; height: 30px;">+</button>
+                            }
+                        </div>
+                    </td>
+                    <td>@item.Price.ToString("c")</td>
+                    <td>@(item.Price * item.Quantity)</td>
+                    <td>
+                        @using (Html.BeginForm("RemoveItem", "Cart", FormMethod.Post))
+                        {
+                            @Html.HiddenFor(m => item.ProductId)
+                            <input type="submit" value="Remove" class="btn btn-danger btn-sm" />
+                        }
+                    </td>
+                </tr>
+            }
+            <tr>
+                <td colspan="3" class="text-right"><strong>Total:</strong></td>
+                <td colspan="2">
+                    @Model.Sum(item => item.Price * item.Quantity).ToString("c")
+                </td>
+            </tr>
+        </tbody>
+    </table>
+}
+else
+{
+    <p>Your shopping cart is empty.</p>
+}
+
+<div>
+    <a class="btn btn-secondary" asp-controller="Menu" asp-action="Index" asp-route-categoryid="1">Continue Shopping</a>
+    <a class="btn btn-success" asp-controller="Cart" asp-action="Checkout">Checkout</a>
+</div>

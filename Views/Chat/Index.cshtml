@@ -1,0 +1,30 @@
+﻿@model ChatViewModel
+
+@{
+    ViewData["Title"] = "ChatBot";
+}
+
+@await Html.PartialAsync("_BannerPartial", "Chat")
+<br />
+<div class="container">
+    <form class="form-group" asp-controller="Chat" asp-action="Index" method="post">
+        <div class="d-flex">
+            <input type="text" id="userInput" class="form-control" placeholder="Type your message here..." asp-for="UserInput" />
+            <button id="sendButton" class="btn btn-primary">Send</button>
+        </div>
+        <br />
+        <div class="d-flex">
+            <h6>Hint: "Give me a recipe with strawberries and red wine."</h6>
+        </div>
+    </form>
+    <div id="chat-box" class="chat-box rounded p-3 mb-3" style="max-height: 400px; overflow-y: auto;">
+        @Html.Raw(Model.BotResponse)
+    </div>
+    @if (!string.IsNullOrEmpty(Model.BotResponse))
+    {
+        <form asp-controller="Chat" asp-action="SaveResponse" method="post">
+            <input type="hidden" asp-for="BotResponse" />
+            <button class="btn btn-secondary mt-3" type="submit">Save this recipe</button>
+        </form>
+    }
+</div>

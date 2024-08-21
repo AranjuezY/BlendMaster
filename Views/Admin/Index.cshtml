@@ -1,0 +1,21 @@
+﻿@await Html.PartialAsync("_BannerPartial", "Menu")
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <h1 class="text-center mb-4">Blend Master Dashboard</h1>
+            <div class="card border-0">
+                <div class="card-body">
+                    <div class="d-grid gap-3">
+                        @Html.ActionLink("AI Assistant", "Admin", "Chat", null, new { @class = "btn btn-outline-primary" })
+                        @Html.ActionLink("Recipe Database", "Recipes", "Admin", null, new { @class = "btn btn-outline-success" })
+                        @Html.ActionLink("Menu Management", "Edit", "Menu", null, new { @class = "btn btn-outline-info" })
+                        @Html.ActionLink("Order Tracking", "OngoingOrders", "Admin", null, new { @class = "btn btn-outline-warning" })
+                        @Html.ActionLink("Analytics Dashboard", "Dashboard", "Admin", null, new { @class = "btn btn-outline-danger" })
+                        @Html.ActionLink("Member Management", "Members", "Admin", null, new { @class = "btn btn-outline-secondary" })
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,34 @@
+﻿
+services:
+  webapplication2:
+    image: webapplication2
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 8080:8080
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+    depends_on:
+      - mssql
+    networks:
+      - app-network
+  mssql:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    platform: linux/amd64
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=Root@1234
+    ports:
+      - 1433:1433
+    networks:
+      - app-network
+    volumes:
+      - my-volume:/var/opt/mssql
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  my-volume:

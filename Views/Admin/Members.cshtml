@@ -1,0 +1,21 @@
+@model List<WebApplication2.Entities.Member>
+
+<div class="container mt-5">
+    <table class="table table-striped table-bordered">
+        <thead>
+        <tr>
+            <td>Email</td>
+            <td>Total Credit</td>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var member in Model)
+        {
+            <tr>
+                <td>@member.Email</td>
+                <td>@member.TotalCredit</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>

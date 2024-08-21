@@ -1,0 +1,42 @@
+﻿@model List<WebApplication2.Entities.Table>
+
+<div class="text-center" id="welcome-area">
+    <h3>Choose your table</h3>
+    <br />
+    @if (ViewData["TableId"] == null)
+    {
+        <form asp-controller="Home" asp-action="SelectTable" method="post" class="form-inline">
+            <div class="form-group mb-2">
+                <select name="id" id="tableSelect" class="form-control">
+                    @foreach (var table in Model)
+                    {
+                        <option value="@table.TableId">@table.TableName</option>
+                    }
+                </select>
+            </div>
+            <br />
+            <button type="submit" class="btn btn-primary mb-2">Submit</button>
+        </form>
+    }
+    else
+    {
+        <h4>Welcome, customer in table @ViewData["TableId"]!</h4>
+        <a asp-controller="Menu" asp-action="Index">Check our menu</a>
+    }
+</div>
+
+<style>
+    body {
+        background: url('/images/background_home.JPG') no-repeat center center fixed;
+        background-size: cover;
+    }
+
+    #welcome-area {
+        text-align: center;
+        padding: 50px;
+        background: rgba(255, 255, 255, 0.8); /* Semi-transparent white background */
+        border-radius: 10px;
+        max-width: 600px;
+        margin: 100px auto;
+    }
+</style>
